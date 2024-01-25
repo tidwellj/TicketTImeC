@@ -1,0 +1,16 @@
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.csproj.AssemblyReference.cache
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.csproj.SuggestedBindingRedirects.cache
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\MainWindow.g.cs
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\App.g.cs
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime_MarkupCompile.cache
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime_MarkupCompile.lref
+C:\Users\tidwellj\source\repos\TicketTime\bin\Debug\TicketTime.exe.config
+C:\Users\tidwellj\source\repos\TicketTime\bin\Debug\TicketTime.exe
+C:\Users\tidwellj\source\repos\TicketTime\bin\Debug\TicketTime.pdb
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\MainWindow.baml
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.g.resources
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.Properties.Resources.resources
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.csproj.GenerateResource.cache
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.csproj.CoreCompileInputs.cache
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.exe
+C:\Users\tidwellj\source\repos\TicketTime\obj\Debug\TicketTime.pdb
