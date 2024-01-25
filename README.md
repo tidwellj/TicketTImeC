@@ -1,2 +1,2 @@
 # TicketTImeC
- Ticket tracking applicatoin in C#
+ Ticket tracking application in C#
