@@ -193,7 +193,7 @@ namespace TicketTime
                 timer.Stop();
                 // timerString = "";
                 _ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                string connectionString = "Data Source=C:\\Users\\jtidw\\OneDrive\\Documents\\GitHub\\TicketTImeC\\ticket_database.db;";
+                string connectionString = $"Data Source={databasePath};";
                 string type = TypeCombo.Text;
                 string ticket = TicketBox.Text;
                 string name = NameBox.Text;
@@ -372,8 +372,10 @@ namespace TicketTime
 
         private void LoadDB()
         {
-            databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
-            MessageBox.Show(databasePath);
+            try
+            { 
+                databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
+            //MessageBox.Show(databasePath);
             SQLiteConnection conn = new SQLiteConnection($"Data Source={databasePath};");
             System.Console.WriteLine(conn);
             conn.Open();
@@ -387,6 +389,12 @@ namespace TicketTime
             // TicketGrid.Columns[1].Visibility = Visibility.Collapsed;
 
             conn.Close();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occured!" + ex.Message);
+            }
 
 
         }
@@ -406,7 +414,7 @@ namespace TicketTime
         {
 
             
-                string connectionString = "Data Source=C:\\Users\\jtidw\\OneDrive\\Documents\\GitHub\\TicketTImeC\\ticket_database.db;";
+                string connectionString = $"Data Source={databasePath};";
 
             var startDate = From.SelectedDate;
                 var endDate = To.SelectedDate;
@@ -545,7 +553,7 @@ namespace TicketTime
         {
 
 
-            string connectionString = "Data Source=C:\\Users\\jtidw\\OneDrive\\Documents\\GitHub\\TicketTImeC\\ticket_database.db;";
+            string connectionString = $"Data Source={databasePath};";
 
             string nameValue = NameSearchBox.Text;
             //var endDate = To.SelectedDate;
@@ -626,7 +634,7 @@ namespace TicketTime
         {
 
 
-            string connectionString = "Data Source=C:\\Users\\jtidw\\OneDrive\\Documents\\GitHub\\TicketTImeC\\ticket_database.db;";
+            string connectionString = $"Data Source={databasePath};";
 
             string typeValue = TypeSearchBox.Text;
             //var endDate = To.SelectedDate;
@@ -705,7 +713,7 @@ namespace TicketTime
         {
 
 
-            string connectionString = "Data Source=C:\\Users\\jtidw\\OneDrive\\Documents\\GitHub\\TicketTImeC\\ticket_database.db;";
+            string connectionString = $"Data Source={databasePath};";
 
             string ticketValue = TicketSearchBox.Text;
             //var endDate = To.SelectedDate;
