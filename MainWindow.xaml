@@ -272,6 +272,13 @@
                             </Button>
                             <Label x:Name="TimeLabel" Content="00:00:00" HorizontalAlignment="Center" Margin="0,190,0,0" VerticalAlignment="Top" FontSize="100" Width="376" Height="142"/>
                             <Label x:Name="TrackingLabel" Content="" Width="210" Margin="4,180,171,0" FontSize="18"/>
+                            <Button x:Name="DBCSVButton" Content="DB to CSV" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FFEFEFF7" Foreground="#FF0E0D0D" BorderBrush="#FF252526" Click="CSVWriter_Click" Margin="616,85,0,0">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5" />
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                         </Grid>
                     </TabItem>
                 </TabControl>
