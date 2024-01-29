@@ -1,28 +1,29 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Timers;
-//using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
-using Application = System.Windows.Application;
-using Timer = System.Timers.Timer;
-using System.Data.SQLite;
-using System.Data;
-using System.Data.Common;
-using MessageBox = System.Windows.MessageBox;
-using System.Linq.Expressions;
-using System.Windows.Media.Animation;
-using System.Xml.Linq;
-using System.Windows.Controls;
-using System.IO;
-using System.Windows.Markup;
-using System.Collections.Generic;
-using Microsoft.Win32;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using System.Text;
-
-namespace TicketTime
+﻿namespace TicketTime
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Common;
+    using System.Data.SQLite;
+    using System.IO;
+    using System.Linq.Expressions;
+    using System.Text;
+    using System.Timers;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Forms;
+    using System.Windows.Input;
+    using System.Windows.Markup;
+    using System.Windows.Media.Animation;
+    using System.Xml.Linq;
+    using Microsoft.Win32;
+
+    // using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+    using Application = System.Windows.Application;
+    using MessageBox = System.Windows.MessageBox;
+    using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+    using Timer = System.Timers.Timer;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -36,115 +37,76 @@ namespace TicketTime
         private string databasePath;
         private string conPath;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
-
-
-
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            timerString = "";
-            LoadDB();
+            this.timerString = string.Empty;
+            this.LoadDB();
 
+            this.notifyIcon = new NotifyIcon();
 
+            this.notifyIcon.Icon = new System.Drawing.Icon("ticket.ico");
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.Text = "Your tooltip text here";
 
-
-            notifyIcon = new NotifyIcon();
-
-
-            notifyIcon.Icon = new System.Drawing.Icon("ticket.ico");
-            notifyIcon.Visible = true;
-            notifyIcon.Text = "Your tooltip text here";
             // notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
-            notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick1;
-
-
-
+            this.notifyIcon.MouseDoubleClick += this.NotifyIcon_MouseDoubleClick1;
 
             var contextMenu = new ContextMenuStrip();
             var quitMenuItem = new ToolStripMenuItem("Quit");
-            quitMenuItem.Click += QuitMenuItem_Click; // Event handler for quitting
+            quitMenuItem.Click += this.QuitMenuItem_Click; // Event handler for quitting
             contextMenu.Items.Add(quitMenuItem);
 
-            notifyIcon.ContextMenuStrip = contextMenu;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            this.notifyIcon.ContextMenuStrip = contextMenu;
         }
 
-        //Timer code ------------------------->
-
+        // Timer code ------------------------->
         public void ChangePause()
         {
-            isPaused = !isPaused;
+            this.isPaused = !this.isPaused;
         }
 
         private void onTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            if (!isPaused)
+            if (!this.isPaused)
             {
-                time = time.Add(TimeSpan.FromSeconds(1));
-                UpdateTimeDisplay();
+                this.time = this.time.Add(TimeSpan.FromSeconds(1));
+                this.UpdateTimeDisplay();
             }
         }
 
-
-
-
-
         private void UpdateTimeDisplay()
         {
-            Dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(() =>
             {
-                timerString = time.ToString(@"hh\:mm\:ss");
-                TimeLabel.Content = timerString;
-
+                this.timerString = this.time.ToString(@"hh\:mm\:ss");
+                this.TimeLabel.Content = this.timerString;
             });
         }
 
-
-
-
-
-        //Notificat tray code ---------------->
-
-
-
-
+        // Notificat tray code ---------------->
         private void NotifyIcon_MouseDoubleClick1(object sender, System.Windows.Forms.MouseEventArgs e)
         {
 
-            StateChanged += MainWindow_StateChanged;
+            this.StateChanged += this.MainWindow_StateChanged;
             this.Show();
             this.WindowState = WindowState.Normal;
-
         }
 
         private void MainWindow_StateChanged(object sender, EventArgs e)
         {
-            if (WindowState == WindowState.Maximized)
+            if (this.WindowState == WindowState.Maximized)
             {
-                Storyboard maximizeAnimation = (Storyboard)FindResource("maximizeAnimation");
-                BeginStoryboard(maximizeAnimation);
+                Storyboard maximizeAnimation = (Storyboard)this.FindResource("maximizeAnimation");
+                this.BeginStoryboard(maximizeAnimation);
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             base.OnClosing(e);
@@ -158,49 +120,38 @@ namespace TicketTime
             this.ShowInTaskbar = false;
         }
 
-
         private void QuitMenuItem_Click(object sender, EventArgs e)
         {
 
-            notifyIcon.Visible = false; // Hide the notify icon
+            this.notifyIcon.Visible = false; // Hide the notify icon
             Application.Current.Shutdown(); // Shutdown the application
-            notifyIcon.Dispose();
-
+            this.notifyIcon.Dispose();
         }
 
         private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             Console.WriteLine("Text Changed");
-
-
         }
-
-
-
 
         private void Clear_click(object sender, RoutedEventArgs e)
         {
 
-            timerString = "00:00:00";
-            TimeLabel.Content = timerString;
-            TicketBox.Text = "";
-            NameBox.Text = "";
-            TypeCombo.SelectedIndex = 0;
-            TrackingLabel.Content = "";
-
+            this.timerString = "00:00:00";
+            this.TimeLabel.Content = this.timerString;
+            this.TicketBox.Text = string.Empty;
+            this.NameBox.Text = string.Empty;
+            this.TypeCombo.SelectedIndex = 0;
+            this.TrackingLabel.Content = string.Empty;
         }
-
 
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
 
+            string trackLabel = this.TimeLabel.Content.ToString();
 
-            string trackLabel = TimeLabel.Content.ToString();
-
-
-            if (timer != null)
+            if (this.timer != null)
             {
-                timer.Stop();
+                this.timer.Stop();
             }
             else
             {
@@ -208,119 +159,87 @@ namespace TicketTime
             }
 
             MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-            
-              //  MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
 
-                if (result == MessageBoxResult.OK)
+            // MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+
+                if (this.TrackingLabel.Content != null)
                 {
 
-                    if (TrackingLabel.Content != null)
+                    // timerString = "";
+                    // _ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                    string connectionString = $"Data Source={this.databasePath};";
+                    string type = this.TypeCombo.Text;
+
+                    string ticket = this.TicketBox.Text;
+                    string ticketValue = this.TicketSearchBox.Text;
+
+                    // var endDate = To.SelectedDate;
+                    string name = this.NameBox.Text;
+
+                    DateTime now = DateTime.Now;
+                    string date = now.ToString("yyyy-MM-dd");
+                    string time = this.TimeLabel.Content.ToString();
+
+                    try
                     {
-
-                        // timerString = "";
-                        //_ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                        string connectionString = $"Data Source={databasePath};";
-                        string type = TypeCombo.Text;
-
-                        string ticket = TicketBox.Text;
-                        string ticketValue = TicketSearchBox.Text;
-                        //var endDate = To.SelectedDate;
-                        string name = NameBox.Text;
-
-
-
-                        DateTime now = DateTime.Now;
-                        string date = now.ToString("yyyy-MM-dd");
-                        string time = TimeLabel.Content.ToString();
-
-                        try
+                        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
                         {
-                            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                            conn.Open();
+                            string sql = "INSERT INTO tickets (Type, Ticket, Name, Date, Time) VALUES (@type, @ticket, @name, @date, @time)";
+                            using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                             {
-                                conn.Open();
-                                string sql = "INSERT INTO tickets (Type, Ticket, Name, Date, Time) VALUES (@type, @ticket, @name, @date, @time)";
-                                using (SQLiteCommand command = new SQLiteCommand(sql, conn))
-                                {
-                                    command.Parameters.AddWithValue("@type", type);
-                                    command.Parameters.AddWithValue("@ticket", ticket);
-                                    command.Parameters.AddWithValue("@name", name);
-                                    command.Parameters.AddWithValue("@date", date);
-                                    command.Parameters.AddWithValue("@time", time);
-                                    command.ExecuteNonQuery();
-
-
-                                }
-
-                                conn.Close();
+                                command.Parameters.AddWithValue("@type", type);
+                                command.Parameters.AddWithValue("@ticket", ticket);
+                                command.Parameters.AddWithValue("@name", name);
+                                command.Parameters.AddWithValue("@date", date);
+                                command.Parameters.AddWithValue("@time", time);
+                                command.ExecuteNonQuery();
                             }
 
-
-
-
+                            conn.Close();
                         }
-
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("An error occured!" + ex.Message);
-                        }
-
-
-
-
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occured!" + ex.Message);
                     }
                 }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    //MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+            }
+            else if (result == MessageBoxResult.Cancel)
+            {
+                // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                this.timer.Stop();
+            }
 
-                    timer.Stop();
-
-
-
-
-                }
-
-                LoadDB();
-
-            
+            this.LoadDB();
         }
-
-
-
-
 
         private void Pause_Click(object sender, RoutedEventArgs e)
         {
 
-
-
-            if (timer == null)
+            if (this.timer == null)
             {
                 MessageBox.Show("Timer not running", "Error!", MessageBoxButton.OK);
-
             }
             else
             {
 
+                this.ChangePause();
 
-                ChangePause();
-
-
-
-                if (Start.Content.ToString() == "Start")
+                if (this.Start.Content.ToString() == "Start")
                 {
-                    Start.Content = "Resume";
+                    this.Start.Content = "Resume";
                 }
             }
         }
 
-
         private void Set_Click(object sender, RoutedEventArgs e)
         {
-            string type = TypeCombo.Text;
-            string ticket = TicketBox.Text;
-            string name = NameBox.Text;
-
+            string type = this.TypeCombo.Text;
+            string ticket = this.TicketBox.Text;
+            string name = this.NameBox.Text;
 
             if (string.IsNullOrEmpty(ticket))
             {
@@ -333,17 +252,13 @@ namespace TicketTime
             }
             else
             {
-                TrackingLabel.Content = "Tracking Ticket";
+                this.TrackingLabel.Content = "Tracking Ticket";
             }
-
-
         }
-
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            string name = NameBox.Text;
-
+            string name = this.NameBox.Text;
 
             if (string.IsNullOrEmpty(name))
             {
@@ -353,42 +268,25 @@ namespace TicketTime
             else
             {
 
-                if (isPaused == false)
+                if (this.isPaused == false)
                 {
-                    isPaused = false;
-                    time = TimeSpan.Zero;
-                    timer = new Timer(1000);
-                    timer.Elapsed += onTimerElapsed;
-                    timer.Start();
+                    this.isPaused = false;
+                    this.time = TimeSpan.Zero;
+                    this.timer = new Timer(1000);
+                    this.timer.Elapsed += this.onTimerElapsed;
+                    this.timer.Start();
                 }
-
-
-
                 else
                 {
-                    if (Start.Content.ToString() == "Resume")
+                    if (this.Start.Content.ToString() == "Resume")
                     {
-                        Start.Content = "Start";
+                        this.Start.Content = "Start";
                     }
-                    ChangePause();
 
-
-
+                    this.ChangePause();
                 }
-
             }
-
-
-
         }
-
-
-
-
-
-
-
-
 
         private void CloseButton_click(object sender, RoutedEventArgs e)
         {
@@ -396,47 +294,38 @@ namespace TicketTime
             this.Close();
         }
 
-
-
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ChangePause();
-
-
-
+            this.ChangePause();
         }
 
         private void TabSearch_Click(object sender, RoutedEventArgs e)
         {
-            TabMaster.SelectedIndex = 0;
-        }
-        private void TabTicket_Click(object sender, RoutedEventArgs e)
-        {
-            TabMaster.SelectedIndex = 2;
+            this.TabMaster.SelectedIndex = 0;
         }
 
+        private void TabTicket_Click(object sender, RoutedEventArgs e)
+        {
+            this.TabMaster.SelectedIndex = 2;
+        }
 
         private void TabSettings_Click(object sender, RoutedEventArgs e)
         {
-            TabMaster.SelectedIndex = 1;
+            this.TabMaster.SelectedIndex = 1;
         }
-
-
-
 
         private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-
         }
 
         private void LoadDB()
         {
             try
             {
-                databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
-                //MessageBox.Show(databasePath);
-                SQLiteConnection conn = new SQLiteConnection($"Data Source={databasePath};");
+                this.databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
+
+                // MessageBox.Show(databasePath);
+                SQLiteConnection conn = new SQLiteConnection($"Data Source={this.databasePath};");
                 System.Console.WriteLine(conn);
                 conn.Open();
                 string query = "Select * from tickets";
@@ -445,18 +334,15 @@ namespace TicketTime
                 DataTable dt = new DataTable();
                 dataAdapter.Fill(dt);
 
-                TicketGrid.ItemsSource = dt.DefaultView;
-                // TicketGrid.Columns[1].Visibility = Visibility.Collapsed;
+                this.TicketGrid.ItemsSource = dt.DefaultView;
 
+                // TicketGrid.Columns[1].Visibility = Visibility.Collapsed;
                 conn.Close();
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show("An error occured!" + ex.Message);
             }
-
-
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -466,18 +352,15 @@ namespace TicketTime
             {
                 this.DragMove();
             }
-
         }
-
 
         private void SearchBetween_Click(object sender, RoutedEventArgs e)
         {
 
+            string connectionString = $"Data Source={this.databasePath};";
 
-            string connectionString = $"Data Source={databasePath};";
-
-            var startDate = From.SelectedDate;
-            var endDate = To.SelectedDate;
+            var startDate = this.From.SelectedDate;
+            var endDate = this.To.SelectedDate;
 
             if (startDate == null || endDate == null)
             {
@@ -487,7 +370,6 @@ namespace TicketTime
             else if (startDate.Value.Date > endDate.Value.Date)
             {
                 MessageBox.Show("Please select a starting date bigger than the end date.");
-
             }
             else if (startDate.Value.Date == endDate.Value.Date)
             {
@@ -506,30 +388,16 @@ namespace TicketTime
                             DataTable dt = new DataTable();
                             dataAdapter.Fill(dt);
 
-                            TicketGrid.ItemsSource = dt.DefaultView;
-
+                            this.TicketGrid.ItemsSource = dt.DefaultView;
 
                             conn.Close();
-
-
-
-
-
                         }
-
                     }
-
-
-
-
                 }
-
-
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occured!" + ex.Message);
                 }
-
             }
             else
             {
@@ -550,81 +418,32 @@ namespace TicketTime
                             DataTable dt = new DataTable();
                             dataAdapter.Fill(dt);
 
-                            TicketGrid.ItemsSource = dt.DefaultView;
-
+                            this.TicketGrid.ItemsSource = dt.DefaultView;
 
                             conn.Close();
-
-
-
                         }
-
-
                     }
-
-
-
-
                 }
-
-
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occured!" + ex.Message);
-
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
 
         private void SearchName_Click(object sender, RoutedEventArgs e)
         {
 
+            string connectionString = $"Data Source={this.databasePath};";
 
-            string connectionString = $"Data Source={databasePath};";
+            string nameValue = this.NameSearchBox.Text;
 
-            string nameValue = NameSearchBox.Text;
-            //var endDate = To.SelectedDate;
-
+            // var endDate = To.SelectedDate;
             if (string.IsNullOrEmpty(nameValue))
             {
 
                 MessageBox.Show("Please enter a ticket name.");
             }
-
-
             else
             {
 
@@ -644,68 +463,32 @@ namespace TicketTime
                             DataTable dt = new DataTable();
                             dataAdapter.Fill(dt);
 
-                            TicketGrid.ItemsSource = dt.DefaultView;
-
+                            this.TicketGrid.ItemsSource = dt.DefaultView;
 
                             conn.Close();
-
-
-
                         }
-
-
                     }
-
-
-
-
                 }
-
-
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occured!" + ex.Message);
-
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
         }
-
-
 
         private void SearchType_Click(object sender, RoutedEventArgs e)
         {
 
+            string connectionString = $"Data Source={this.databasePath};";
 
-            string connectionString = $"Data Source={databasePath};";
+            string typeValue = this.TypeSearchBox.Text;
 
-            string typeValue = TypeSearchBox.Text;
-            //var endDate = To.SelectedDate;
-
+            // var endDate = To.SelectedDate;
             if (string.IsNullOrEmpty(typeValue))
             {
 
                 MessageBox.Show("Please enter a ticket type.");
             }
-
-
             else
             {
 
@@ -718,73 +501,40 @@ namespace TicketTime
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
                             command.Parameters.AddWithValue("@typeValue", typeValue);
-                            //command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
+
+                            // command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
                             command.ExecuteNonQuery();
 
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
                             DataTable dt = new DataTable();
                             dataAdapter.Fill(dt);
 
-                            TicketGrid.ItemsSource = dt.DefaultView;
-
+                            this.TicketGrid.ItemsSource = dt.DefaultView;
 
                             conn.Close();
-
-
-
                         }
-
-
                     }
-
-
-
-
                 }
-
-
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occured!" + ex.Message);
-
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
         }
 
         private void SearchTicket_Click(object sender, RoutedEventArgs e)
         {
 
+            string connectionString = $"Data Source={this.databasePath};";
 
-            string connectionString = $"Data Source={databasePath};";
+            string ticketValue = this.TicketSearchBox.Text;
 
-            string ticketValue = TicketSearchBox.Text;
-            //var endDate = To.SelectedDate;
-
+            // var endDate = To.SelectedDate;
             if (string.IsNullOrEmpty(ticketValue))
             {
 
                 MessageBox.Show("Please enter a icket number.");
             }
-
-
             else
             {
 
@@ -797,6 +547,7 @@ namespace TicketTime
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
                             command.Parameters.AddWithValue("@ticketValue", ticketValue);
+
                             // command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
                             command.ExecuteNonQuery();
 
@@ -804,80 +555,40 @@ namespace TicketTime
                             DataTable dt = new DataTable();
                             dataAdapter.Fill(dt);
 
-                            TicketGrid.ItemsSource = dt.DefaultView;
-
+                            this.TicketGrid.ItemsSource = dt.DefaultView;
 
                             conn.Close();
-
-
-
                         }
-
-
                     }
-
-
-
-
                 }
-
-
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occured!" + ex.Message);
-
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
         }
 
         private void SearchClear_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                TicketSearchBox.Text = "";
-                NameSearchBox.Text = "";
-                TypeSearchBox.Text = "";
-                From.SelectedDate = null;
-                To.SelectedDate = null;
+                this.TicketSearchBox.Text = string.Empty;
+                this.NameSearchBox.Text = string.Empty;
+                this.TypeSearchBox.Text = string.Empty;
+                this.From.SelectedDate = null;
+                this.To.SelectedDate = null;
 
-                LoadDB();
-
+                this.LoadDB();
             }
-
-
             catch (Exception ex)
             {
                 MessageBox.Show("An error occured!" + ex.Message);
-
             }
-
-
         }
 
         private void CSVWriter_Click(object sender, RoutedEventArgs e)
         {
-            string connectionString = $"Data Source={databasePath};";
-
-
-
+            string connectionString = $"Data Source={this.databasePath};";
 
             try
             {
@@ -901,51 +612,27 @@ namespace TicketTime
                                 {
                                     row[i] = reader[i].ToString();
                                 }
+
                                 data.Add(row);
                             }
+
                             SaveFileDialog saveFileDialog = new SaveFileDialog();
                             saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
                             saveFileDialog.DefaultExt = "csv";
                             if (saveFileDialog.ShowDialog() == true)
                             {
-                                WriteDataToCsv(data, saveFileDialog.FileName);
+                                this.WriteDataToCsv(data, saveFileDialog.FileName);
                             }
                         }
 
-
                         conn.Close();
-
-
-
-
-
-
                     }
-
-
-
                 }
-
-
-
-
             }
-
-
             catch (Exception ex)
             {
                 MessageBox.Show("An error occured!" + ex.Message);
-
-
-
-
             }
-
-
-
-
-
-
         }
 
         private void WriteDataToCsv(List<string[]> data, string filePath)
@@ -955,8 +642,9 @@ namespace TicketTime
                 // Assuming the first row of data contains the headers
                 for (int i = 0; i < data[0].Length; i++)
                 {
-                    file.Write(data[0][i] + (i < data[0].Length - 1 ? "," : ""));
+                    file.Write(data[0][i] + (i < data[0].Length - 1 ? "," : string.Empty));
                 }
+
                 file.WriteLine();
 
                 // Writing the data
@@ -966,17 +654,16 @@ namespace TicketTime
                     {
                         string value = data[i][j];
                         if (value.Contains(","))
+                        {
                             value = "\"" + value + "\""; // Handle commas within fields
+                        }
 
-                        file.Write(value + (j < data[i].Length - 1 ? "," : ""));
+                        file.Write(value + (j < data[i].Length - 1 ? "," : string.Empty));
                     }
+
                     file.WriteLine();
                 }
             }
         }
-
-
-
-
     }
 }
