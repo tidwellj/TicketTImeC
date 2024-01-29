@@ -15,6 +15,11 @@ using System.Windows.Media.Animation;
 using System.Xml.Linq;
 using System.Windows.Controls;
 using System.IO;
+using System.Windows.Markup;
+using System.Collections.Generic;
+using Microsoft.Win32;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using System.Text;
 
 namespace TicketTime
 {
@@ -166,10 +171,10 @@ namespace TicketTime
         private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             Console.WriteLine("Text Changed");
-            
-           
+
+
         }
-        
+
 
 
 
@@ -181,6 +186,7 @@ namespace TicketTime
             TicketBox.Text = "";
             NameBox.Text = "";
             TypeCombo.SelectedIndex = 0;
+            TrackingLabel.Content = "";
 
         }
 
@@ -188,66 +194,95 @@ namespace TicketTime
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
 
+
+            string trackLabel = TimeLabel.Content.ToString();
+
+
             if (timer != null)
             {
                 timer.Stop();
-                // timerString = "";
-                _ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                string connectionString = $"Data Source={databasePath};";
-                string type = TypeCombo.Text;
-                string ticket = TicketBox.Text;
-                string name = NameBox.Text;
-                DateTime now = DateTime.Now;
-                string date = now.ToString("yyyy-MM-dd");
-                string time = TimeLabel.Content.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Timer not started");
+            }
 
-                try
+            MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+            
+              //  MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
                 {
-                    using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+
+                    if (TrackingLabel.Content != null)
                     {
-                        conn.Open();
-                        string sql = "INSERT INTO tickets (Type, Ticket, Name, Date, Time) VALUES (@type, @ticket, @name, @date, @time)";
-                        using (SQLiteCommand command = new SQLiteCommand(sql, conn))
+
+                        // timerString = "";
+                        //_ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                        string connectionString = $"Data Source={databasePath};";
+                        string type = TypeCombo.Text;
+
+                        string ticket = TicketBox.Text;
+                        string ticketValue = TicketSearchBox.Text;
+                        //var endDate = To.SelectedDate;
+                        string name = NameBox.Text;
+
+
+
+                        DateTime now = DateTime.Now;
+                        string date = now.ToString("yyyy-MM-dd");
+                        string time = TimeLabel.Content.ToString();
+
+                        try
                         {
-                            command.Parameters.AddWithValue("@type", type);
-                            command.Parameters.AddWithValue("@ticket", ticket);
-                            command.Parameters.AddWithValue("@name", name);
-                            command.Parameters.AddWithValue("@date", date);
-                            command.Parameters.AddWithValue("@time", time);
-                            command.ExecuteNonQuery();
+                            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                            {
+                                conn.Open();
+                                string sql = "INSERT INTO tickets (Type, Ticket, Name, Date, Time) VALUES (@type, @ticket, @name, @date, @time)";
+                                using (SQLiteCommand command = new SQLiteCommand(sql, conn))
+                                {
+                                    command.Parameters.AddWithValue("@type", type);
+                                    command.Parameters.AddWithValue("@ticket", ticket);
+                                    command.Parameters.AddWithValue("@name", name);
+                                    command.Parameters.AddWithValue("@date", date);
+                                    command.Parameters.AddWithValue("@time", time);
+                                    command.ExecuteNonQuery();
+
+
+                                }
+
+                                conn.Close();
+                            }
+
+
 
 
                         }
 
-                        conn.Close();
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("An error occured!" + ex.Message);
+                        }
+
+
+
+
                     }
-
-
-
-
                 }
-
-                catch (Exception ex)
+                else if (result == MessageBoxResult.Cancel)
                 {
-                    MessageBox.Show("An error occured!" + ex.Message);
+                    //MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+
+                    timer.Stop();
+
+
+
+
                 }
 
+                LoadDB();
 
-
-
-            }
-            else
-            {
-                MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-
-                if (result == MessageBoxResult.OK)
-                    MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
-
-            }
-
-            LoadDB();
-
-
+            
         }
 
 
@@ -286,37 +321,62 @@ namespace TicketTime
             string ticket = TicketBox.Text;
             string name = NameBox.Text;
 
-            TrackingLabel.Content = "Tracking Ticket";
 
-           
+            if (string.IsNullOrEmpty(ticket))
+            {
+                ticket = "None";
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                MessageBox.Show("Please enter a name");
+            }
+            else
+            {
+                TrackingLabel.Content = "Tracking Ticket";
+            }
+
 
         }
 
 
-            private void Start_Click(object sender, RoutedEventArgs e)
+        private void Start_Click(object sender, RoutedEventArgs e)
         {
-            if (isPaused == false)
-            {
-                isPaused = false;
-                time = TimeSpan.Zero;
-                timer = new Timer(1000);
-                timer.Elapsed += onTimerElapsed;
-                timer.Start();
-            }
+            string name = NameBox.Text;
 
+
+            if (string.IsNullOrEmpty(name))
+            {
+
+                MessageBox.Show("Please enter a name");
+            }
             else
             {
-                if (Start.Content.ToString() == "Resume")
+
+                if (isPaused == false)
                 {
-                    Start.Content = "Start";
+                    isPaused = false;
+                    time = TimeSpan.Zero;
+                    timer = new Timer(1000);
+                    timer.Elapsed += onTimerElapsed;
+                    timer.Start();
                 }
-                ChangePause();
 
 
+
+                else
+                {
+                    if (Start.Content.ToString() == "Resume")
+                    {
+                        Start.Content = "Start";
+                    }
+                    ChangePause();
+
+
+
+                }
 
             }
-
-
 
 
 
@@ -373,22 +433,22 @@ namespace TicketTime
         private void LoadDB()
         {
             try
-            { 
+            {
                 databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
-            //MessageBox.Show(databasePath);
-            SQLiteConnection conn = new SQLiteConnection($"Data Source={databasePath};");
-            System.Console.WriteLine(conn);
-            conn.Open();
-            string query = "Select * from tickets";
-            SQLiteCommand cmd = new SQLiteCommand(query, conn);
-            SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            dataAdapter.Fill(dt);
+                //MessageBox.Show(databasePath);
+                SQLiteConnection conn = new SQLiteConnection($"Data Source={databasePath};");
+                System.Console.WriteLine(conn);
+                conn.Open();
+                string query = "Select * from tickets";
+                SQLiteCommand cmd = new SQLiteCommand(query, conn);
+                SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                dataAdapter.Fill(dt);
 
-            TicketGrid.ItemsSource = dt.DefaultView;
-            // TicketGrid.Columns[1].Visibility = Visibility.Collapsed;
+                TicketGrid.ItemsSource = dt.DefaultView;
+                // TicketGrid.Columns[1].Visibility = Visibility.Collapsed;
 
-            conn.Close();
+                conn.Close();
             }
 
             catch (Exception ex)
@@ -413,106 +473,106 @@ namespace TicketTime
         private void SearchBetween_Click(object sender, RoutedEventArgs e)
         {
 
-            
-                string connectionString = $"Data Source={databasePath};";
+
+            string connectionString = $"Data Source={databasePath};";
 
             var startDate = From.SelectedDate;
-                var endDate = To.SelectedDate;
+            var endDate = To.SelectedDate;
 
-                if (startDate == null || endDate == null)
-                {
+            if (startDate == null || endDate == null)
+            {
 
-                    MessageBox.Show("Please select values for both dates.");
-                }
-                else if (startDate.Value.Date > endDate.Value.Date)
-                {
-                    MessageBox.Show("Please select a starting date bigger than the end date.");
-
-                }
-                else if (startDate.Value.Date == endDate.Value.Date)
-                    {
-                        try
-                        {
-                            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
-                            {
-                                conn.Open();
-                                string sql = "SELECT * FROM tickets WHERE DATE = @startDate";
-                                using (SQLiteCommand command = new SQLiteCommand(sql, conn))
-                                {
-                                    command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyy-MM-dd"));
-                                    command.Parameters.AddWithValue("@endDate", startDate.Value.ToString("yyy-MM-dd"));
-                                    command.ExecuteNonQuery();
-                                    SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
-                                    DataTable dt = new DataTable();
-                                    dataAdapter.Fill(dt);
-
-                                    TicketGrid.ItemsSource = dt.DefaultView;
-
-
-                                     conn.Close();
-                                    
-
-
-
-                        
-                                }
-                                
-                            }
-
-
-
-
-                        }
-
-
-                        catch (Exception ex)
-                        {
-                        MessageBox.Show("An error occured!" + ex.Message);
-                        }
+                MessageBox.Show("Please select values for both dates.");
+            }
+            else if (startDate.Value.Date > endDate.Value.Date)
+            {
+                MessageBox.Show("Please select a starting date bigger than the end date.");
 
             }
-                else
+            else if (startDate.Value.Date == endDate.Value.Date)
+            {
+                try
                 {
-
-                    try
+                    using (SQLiteConnection conn = new SQLiteConnection(connectionString))
                     {
-                        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                        conn.Open();
+                        string sql = "SELECT * FROM tickets WHERE DATE = @startDate";
+                        using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
-                            conn.Open();
-                            string sql = "SELECT * FROM TICKETS where DATE BETWEEN @startDate and @endDate";
-                            using (SQLiteCommand command = new SQLiteCommand(sql, conn))
-                            {
-                                command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyy-MM-dd"));
-                                command.Parameters.AddWithValue("@endDate", endDate.Value.ToString("yyy-MM-dd"));
-                                command.ExecuteNonQuery ();
-                                
-                                SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
-                                DataTable dt = new DataTable();
-                                dataAdapter.Fill(dt);
+                            command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyy-MM-dd"));
+                            command.Parameters.AddWithValue("@endDate", startDate.Value.ToString("yyy-MM-dd"));
+                            command.ExecuteNonQuery();
+                            SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
+                            DataTable dt = new DataTable();
+                            dataAdapter.Fill(dt);
 
-                                TicketGrid.ItemsSource = dt.DefaultView;
+                            TicketGrid.ItemsSource = dt.DefaultView;
 
 
-                                conn.Close();
+                            conn.Close();
+
+
 
 
 
                         }
-                            
-
-                        }
-
-
-
 
                     }
 
 
-                    catch (Exception ex)
+
+
+                }
+
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured!" + ex.Message);
+                }
+
+            }
+            else
+            {
+
+                try
+                {
+                    using (SQLiteConnection conn = new SQLiteConnection(connectionString))
                     {
-                        MessageBox.Show("An error occured!" + ex.Message);
+                        conn.Open();
+                        string sql = "SELECT * FROM TICKETS where DATE BETWEEN @startDate and @endDate";
+                        using (SQLiteCommand command = new SQLiteCommand(sql, conn))
+                        {
+                            command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyy-MM-dd"));
+                            command.Parameters.AddWithValue("@endDate", endDate.Value.ToString("yyy-MM-dd"));
+                            command.ExecuteNonQuery();
+
+                            SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
+                            DataTable dt = new DataTable();
+                            dataAdapter.Fill(dt);
+
+                            TicketGrid.ItemsSource = dt.DefaultView;
+
+
+                            conn.Close();
+
+
+
+                        }
+
 
                     }
+
+
+
+
+                }
+
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured!" + ex.Message);
+
+                }
 
 
 
@@ -737,7 +797,7 @@ namespace TicketTime
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
                             command.Parameters.AddWithValue("@ticketValue", ticketValue);
-                           // command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
+                            // command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
                             command.ExecuteNonQuery();
 
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
@@ -809,8 +869,114 @@ namespace TicketTime
 
             }
 
+
         }
+
+        private void CSVWriter_Click(object sender, RoutedEventArgs e)
+        {
+            string connectionString = $"Data Source={databasePath};";
+
+
+
+
+            try
+            {
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    conn.Open();
+                    string sql = "SELECT * FROM tickets";
+                    using (SQLiteCommand command = new SQLiteCommand(sql, conn))
+                    {
+
+                        command.ExecuteNonQuery();
+
+                        List<string[]> data = new List<string[]>();
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string[] row = new string[reader.FieldCount];
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    row[i] = reader[i].ToString();
+                                }
+                                data.Add(row);
+                            }
+                            SaveFileDialog saveFileDialog = new SaveFileDialog();
+                            saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                            saveFileDialog.DefaultExt = "csv";
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                WriteDataToCsv(data, saveFileDialog.FileName);
+                            }
+                        }
+
+
+                        conn.Close();
+
+
+
+
+
+
+                    }
+
+
+
+                }
+
+
+
+
+            }
+
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occured!" + ex.Message);
+
+
+
+
+            }
+
+
+
+
+
+
+        }
+
+        private void WriteDataToCsv(List<string[]> data, string filePath)
+        {
+            using (StreamWriter file = new StreamWriter(filePath, false, Encoding.UTF8))
+            {
+                // Assuming the first row of data contains the headers
+                for (int i = 0; i < data[0].Length; i++)
+                {
+                    file.Write(data[0][i] + (i < data[0].Length - 1 ? "," : ""));
+                }
+                file.WriteLine();
+
+                // Writing the data
+                for (int i = 1; i < data.Count; i++)
+                {
+                    for (int j = 0; j < data[i].Length; j++)
+                    {
+                        string value = data[i][j];
+                        if (value.Contains(","))
+                            value = "\"" + value + "\""; // Handle commas within fields
+
+                        file.Write(value + (j < data[i].Length - 1 ? "," : ""));
+                    }
+                    file.WriteLine();
+                }
+            }
+        }
+
+
+
 
     }
 }
-       
