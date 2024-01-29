@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using System.Windows.Media.Animation;
 using System.Xml.Linq;
 using System.Windows.Controls;
+using System.IO;
 
 namespace TicketTime
 {
@@ -27,6 +28,8 @@ namespace TicketTime
         private TimeSpan time;
         private bool isPaused;
         public string timerString;
+        private string databasePath;
+        private string conPath;
 
 
         public MainWindow()
@@ -369,7 +372,9 @@ namespace TicketTime
 
         private void LoadDB()
         {
-            SQLiteConnection conn = new SQLiteConnection("Data Source=C:\\Users\\jtidw\\OneDrive\\Documents\\GitHub\\TicketTImeC\\ticket_database.db;");
+            databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
+            MessageBox.Show(databasePath);
+            SQLiteConnection conn = new SQLiteConnection($"Data Source={databasePath};");
             System.Console.WriteLine(conn);
             conn.Open();
             string query = "Select * from tickets";
