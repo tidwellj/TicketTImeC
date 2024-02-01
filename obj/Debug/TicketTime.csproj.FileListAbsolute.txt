@@ -115,3 +115,7 @@ C:\Users\jtidw\Downloads\b\obj\Debug\MessageOK.g.cs
 C:\Users\jtidw\Downloads\b\obj\Debug\MessageOK.baml
 C:\Users\jtidw\Downloads\b\obj\Debug\MessageOKCancel.g.cs
 C:\Users\jtidw\Downloads\b\obj\Debug\MessageOKCancel.baml
+C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\MessageOK.g.cs
+C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\MessageOKCancel.g.cs
+C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\MessageOK.baml
+C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\MessageOKCancel.baml
