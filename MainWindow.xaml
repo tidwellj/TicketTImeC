@@ -15,6 +15,9 @@
 
 
     <Window.Resources>
+        
+       
+
 
         <!-- Style for the TextBox -->
         <Style x:Key="RoundedTextBox" TargetType="{x:Type TextBox}">
@@ -120,8 +123,8 @@
                     <TabItem x:Name="TabSearch" Header="TabItem" Visibility="Hidden" Margin="0,-24,0,0">
                         <Grid HorizontalAlignment="Left" Height="500" VerticalAlignment="Top" Width="800" Margin="0,-24,0,0">
                             <Border x:Name="SearchView" CornerRadius="10" BorderThickness="1" HorizontalAlignment="Left" Height="375" VerticalAlignment="Top" Width="650" Background="WhiteSmoke" Margin="114,8,0,0" BorderBrush="Black"/>
-                            <DatePicker x:Name="From" Width ="105" Height="25" Margin="400,0,-200,390" SelectedDate="{Binding SelectedDate}"/>
-                            <DatePicker x:Name="To" Width ="105" Height="25" Margin="608,13,6,350" SelectedDate="{Binding SelectedDate}"/>
+                            <DatePicker x:Name="From" Width ="105"  Height="25" Margin="400,0,-200,390" SelectedDate="{Binding SelectedDate}" />
+                            <DatePicker x:Name="To" Width ="105" Height="25" Margin="608,13,6,350" SelectedDate="{Binding SelectedDate}"   />
                             <Button x:Name="TabButtonTimer_2" Content="Timer" HorizontalAlignment="Left" Margin="10,152,0,0" Width="93" Height="71" VerticalAlignment="Top" Background="#FF3E3E42" Foreground="White" BorderBrush="#FF252526" Click="TabTicket_Click">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
@@ -152,7 +155,7 @@
                                 </Button.Resources>
                             </Button>
                             <Label x:Name="TicketSearchLabel" Content="By Ticket" Background="WhiteSmoke" Height="25" Width="61" Margin="550,0,0,210"/>
-                            <TextBox x:Name="TicketSearchBox" TextWrapping="Wrap" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="650,0,0,170"/>
+                            <TextBox x:Name="TicketSearchBox" TextWrapping="Wrap" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="650,0,0,170" Style="{StaticResource RoundedTextBox}"/>
                             <Button x:Name="TicketSearchButton" Content="Search" HorizontalAlignment="Left" Width="105" Height="30" Background="#FF3E3E42" Foreground="White" BorderBrush="#FF252526" Click="SearchTicket_Click" Margin="650,0,0,110">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
@@ -161,13 +164,13 @@
                                 </Button.Resources>
                             </Button>
                             <DataGrid x:Name="TicketGrid" ColumnHeaderStyle="{StaticResource FlatHeaderStyle}" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False"  ColumnWidth="*" AutoGenerateColumns="True" Width="500" Height="360" Margin="0,-117,50,0" HorizontalAlignment="Center" VerticalAlignment="Center" AutoGeneratingColumn="MyDataGrid_AutoGeneratingColumn" Background="WhiteSmoke" >
-                            
+
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
                                         <Setter Property="Margin" Value="0,0,0,5"/>
 
                                         <Setter Property="Template">
-                                        
+
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="DataGridRow">
                                                     <Border x:Name="DGR_Border" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="5" Background="{TemplateBinding Background}">
@@ -189,7 +192,7 @@
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
-                                    
+
                                 </DataGrid.RowStyle>
                             </DataGrid>
 
@@ -205,7 +208,7 @@
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <TextBox x:Name="NameSearchBox" TextWrapping="Wrap" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" TextChanged="TextBox_TextChanged" Margin="650,231,0,0"/>
+                            <TextBox x:Name="NameSearchBox" TextWrapping="Wrap" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" TextChanged="TextBox_TextChanged" Margin="650,231,0,0" Style="{StaticResource RoundedTextBox}"/>
                             <Label x:Name="TypeSearchLabel" Content="By Type" Background="WhiteSmoke" Height="25" Width="61" Margin="555,110,0,0"/>
                             <Button x:Name="TypeSearchButton" Content="Search" HorizontalAlignment="Left" Width="105" Height="30" Background="#FF3E3E42" Foreground="White" BorderBrush="#FF252526" Click="SearchType_Click" Margin="650,320,0,105">
                                 <Button.Resources>
@@ -214,7 +217,7 @@
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <TextBox x:Name="TypeSearchBox" TextWrapping="Wrap" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="650,315,0,0"/>
+                            <TextBox x:Name="TypeSearchBox" TextWrapping="Wrap" Height="25" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="650,315,0,0" Style ="{StaticResource RoundedTextBox}"/>
                             <Button x:Name="TabButtonClear" Content="Clear Search" HorizontalAlignment="Left" Width="93" Height="71" VerticalAlignment="Top" Background="#FF3E3E42" Foreground="White" BorderBrush="#FF252526" Click="SearchClear_Click" Margin="10,73,0,0">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">

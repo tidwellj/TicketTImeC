@@ -38,6 +38,7 @@ namespace TicketTime
         public string timerString;
         private string databasePath;
         private string conPath;
+       
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -74,6 +75,7 @@ namespace TicketTime
             //buttonToChange.Background = new SolidColorBrush(Colors.Green); // Change to your desired color
 
             //Start.Background = new SolidColorBrush(Colors.Red);
+            //sharedData = data;
 
 
         }
@@ -166,25 +168,53 @@ namespace TicketTime
             LockBorder.Visibility = Visibility.Visible;
             LockBorder_2.Visibility = Visibility.Visible;
             LockBorder_3.Visibility = Visibility.Visible;
+            string dataToShare = "Initial Data";
 
-            this.timerString = "00:00:00";
-            this.TimeLabel.Content = this.timerString;
-            this.TicketBox.Text = string.Empty;
-            this.NameBox.Text = string.Empty;
-            this.TypeCombo.SelectedIndex = 0;
-            this.TrackingLabel.Content = string.Empty;
+            MessageOKCancel messageOKCancel = new MessageOKCancel(dataToShare);
 
+            // MessageOKLoad();
+           // messageOKCancel.Owner = this;
+            messageOKCancel.Left = this.Left + (this.ActualWidth - messageOKCancel.Width) / 2;
+
+
+
+            //messageOK.Left = this.Left;
+            messageOKCancel.Top = this.Top + (this.ActualHeight - messageOKCancel.Height) / 2;
+            // messageOK.Show();
+
+
+            var messageOK = new MessageOK();
+
+            // MessageOKLoad();
+            messageOK.Owner = this;
+            messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
+
+
+
+            //messageOK.Left = this.Left;
+            messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
+            // messageOK.Show();
+
+            this.timer.Stop();
+
+
+
+            //messageOKCancel.Content = "Do you want to save ticket to Database?";
 
             if (this.timer != null)
             {
-                this.timer.Stop();
+
+                messageOKCancel.MessageOKLabel.Text = "Do you want to save ticket to database?";
+                string updatedData = messageOKCancel.GetUpdatedData();
+
+                messageOKCancel.Show();
 
 
-
-                MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-
+                //MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                // int toggle = messageOKCancel.toggle;
                 // MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.OK)
+                MessageBox.Show(updatedData);
+                if (updatedData == "1")
                 {
 
                     if (this.TrackingLabel.Content != null)
@@ -229,23 +259,44 @@ namespace TicketTime
                             MessageBox.Show("An error occured!" + ex.Message);
 
                         }
+
+                        this.timerString = "00:00:00";
+                        this.TimeLabel.Content = this.timerString;
+                        this.TicketBox.Text = string.Empty;
+                        this.NameBox.Text = string.Empty;
+                        this.TypeCombo.SelectedIndex = 0;
+                        this.TrackingLabel.Content = string.Empty;
+
                     }
 
 
-                    else if (result == MessageBoxResult.Cancel)
+                    else if (messageOKCancel.toggle == "2")
                     {
-                        // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                       
                         this.timer.Stop();
                     }
                     else
                     {
-                        MessageBox.Show("Timer not started");
+
+
+                        // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                        messageOK.MessageOKLabel.Text = "Timer never started";
+                        messageOK.Show();
+
+
+
+
+                        //MessageBox.Show("Timer not started");
                     }
+
                 }
             }
             else
             {
-                MessageBox.Show("Timer not started");
+                // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                messageOK.MessageOKLabel.Text = "Timer never started";
+                messageOK.Show();
+               // MessageBox.Show("Timer not started");
             }
 
             this.LoadDB();
