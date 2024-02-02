@@ -38,13 +38,15 @@ namespace TicketTime
         public string timerString;
         private string databasePath;
         private string conPath;
-       
+        // private SharedData sharedData = new SharedData();
+        public string toggled;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
         public MainWindow()
         {
+            //sharedData.Data = "Some data";
 
             this.InitializeComponent();
 
@@ -168,12 +170,16 @@ namespace TicketTime
             LockBorder.Visibility = Visibility.Visible;
             LockBorder_2.Visibility = Visibility.Visible;
             LockBorder_3.Visibility = Visibility.Visible;
-            string dataToShare = "Initial Data";
+            //string dataToShare = "Initial Data";
 
-            MessageOKCancel messageOKCancel = new MessageOKCancel(dataToShare);
+            //var messageOKCancel = new MessageOKCancel(sharedData);
 
             // MessageOKLoad();
-           // messageOKCancel.Owner = this;
+            // messageOKCancel.Owner = this;
+            MessageOKCancel messageOKCancel = new MessageOKCancel(this);
+
+            // string toggle = messageOKCancel.toggled;
+
             messageOKCancel.Left = this.Left + (this.ActualWidth - messageOKCancel.Width) / 2;
 
 
@@ -195,7 +201,7 @@ namespace TicketTime
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
             // messageOK.Show();
 
-            this.timer.Stop();
+            // this.timer.Stop();
 
 
 
@@ -203,106 +209,122 @@ namespace TicketTime
 
             if (this.timer != null)
             {
-
+                timer.Stop();
                 messageOKCancel.MessageOKLabel.Text = "Do you want to save ticket to database?";
-                string updatedData = messageOKCancel.GetUpdatedData();
+                // string updatedData = messageOKCancel.GetUpdatedData();
 
                 messageOKCancel.Show();
-
+                UpdateVariable(toggled);
 
                 //MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
                 // int toggle = messageOKCancel.toggle;
                 // MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
-                MessageBox.Show(updatedData);
-                if (updatedData == "1")
+                // MessageBox.Show(messageOKCancel.toggled);
+                if (toggled == "1")
                 {
+                    MessageBox.Show("Tart");
 
-                    if (this.TrackingLabel.Content != null)
+                    // if (toggled == "1")
+                    //{
+                    MessageBox.Show("Barf");
+                    // timerString = "";
+                    // _ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                    string connectionString = $"Data Source={this.databasePath};";
+                    string type = this.TypeCombo.Text;
+
+                    string ticket = this.TicketBox.Text;
+                    string ticketValue = this.TicketSearchBox.Text;
+
+                    // var endDate = To.SelectedDate;
+                    string name = this.NameBox.Text;
+
+                    DateTime now = DateTime.Now;
+                    string date = now.ToString("yyyy-MM-dd");
+                    string time = this.TimeLabel.Content.ToString();
+
+                    try
                     {
-
-                        // timerString = "";
-                        // _ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                        string connectionString = $"Data Source={this.databasePath};";
-                        string type = this.TypeCombo.Text;
-
-                        string ticket = this.TicketBox.Text;
-                        string ticketValue = this.TicketSearchBox.Text;
-
-                        // var endDate = To.SelectedDate;
-                        string name = this.NameBox.Text;
-
-                        DateTime now = DateTime.Now;
-                        string date = now.ToString("yyyy-MM-dd");
-                        string time = this.TimeLabel.Content.ToString();
-
-                        try
+                        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
                         {
-                            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                            conn.Open();
+                            string sql = "INSERT INTO tickets (Type, Ticket, Name, Date, Time) VALUES (@type, @ticket, @name, @date, @time)";
+                            using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                             {
-                                conn.Open();
-                                string sql = "INSERT INTO tickets (Type, Ticket, Name, Date, Time) VALUES (@type, @ticket, @name, @date, @time)";
-                                using (SQLiteCommand command = new SQLiteCommand(sql, conn))
-                                {
-                                    command.Parameters.AddWithValue("@type", type);
-                                    command.Parameters.AddWithValue("@ticket", ticket);
-                                    command.Parameters.AddWithValue("@name", name);
-                                    command.Parameters.AddWithValue("@date", date);
-                                    command.Parameters.AddWithValue("@time", time);
-                                    command.ExecuteNonQuery();
-                                }
-
-                                conn.Close();
+                                command.Parameters.AddWithValue("@type", type);
+                                command.Parameters.AddWithValue("@ticket", ticket);
+                                command.Parameters.AddWithValue("@name", name);
+                                command.Parameters.AddWithValue("@date", date);
+                                command.Parameters.AddWithValue("@time", time);
+                                command.ExecuteNonQuery();
                             }
+
+                            conn.Close();
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("An error occured!" + ex.Message);
-
-                        }
-
-                        this.timerString = "00:00:00";
-                        this.TimeLabel.Content = this.timerString;
-                        this.TicketBox.Text = string.Empty;
-                        this.NameBox.Text = string.Empty;
-                        this.TypeCombo.SelectedIndex = 0;
-                        this.TrackingLabel.Content = string.Empty;
-
                     }
-
-
-                    else if (messageOKCancel.toggle == "2")
+                    catch (Exception ex)
                     {
-                       
-                        this.timer.Stop();
+                        MessageBox.Show("An error occured!" + ex.Message);
+
                     }
-                    else
-                    {
 
 
-                        // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                        messageOK.MessageOKLabel.Text = "Timer never started";
-                        messageOK.Show();
-
-
-
-
-                        //MessageBox.Show("Timer not started");
-                    }
 
                 }
+
+
+                //  else if (messageOKCancel.toggled == "2")
+                //  {
+
+                //     this.timer.Stop();
+                // }
+                else if(toggled == "2")
+                {
+                    messageOK.Owner = this;
+                    messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
+
+
+
+                    //messageOK.Left = this.Left;
+                    messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
+
+                    // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                    messageOK.MessageOKLabel.Text = "Timer never started";
+                    messageOK.Show();
+
+
+
+
+                    //MessageBox.Show("Timer not started");
+                }
+
+                
+
+
+
+
+
+
             }
             else
             {
                 // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
                 messageOK.MessageOKLabel.Text = "Timer never started";
                 messageOK.Show();
-               // MessageBox.Show("Timer not started");
+                MessageBox.Show("Timer not started");
             }
 
             this.LoadDB();
-            
+            MessageBox.Show(toggled);
+
+            this.timerString = "00:00:00";
+            this.TimeLabel.Content = this.timerString;
+            this.TicketBox.Text = string.Empty;
+            this.NameBox.Text = string.Empty;
+            this.TypeCombo.SelectedIndex = 0;
+            this.TrackingLabel.Content = string.Empty;
+
         }
-        
+
         private void Pause_Click(object sender, RoutedEventArgs e)
         {
             var messageOK = new MessageOK();
@@ -321,7 +343,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Timer is not running!";
                 messageOK.Show();
-               // MessageBox.Show("Timer not running", "Error!", MessageBoxButton.OK);
+                // MessageBox.Show("Timer not running", "Error!", MessageBoxButton.OK);
             }
             else
             {
@@ -345,7 +367,7 @@ namespace TicketTime
             //var 
             var messageOK = new MessageOK();
 
-           // MessageOKLoad();
+            // MessageOKLoad();
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
@@ -353,8 +375,8 @@ namespace TicketTime
 
             //messageOK.Left = this.Left;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-           // messageOK.Show();
-            
+            // messageOK.Show();
+
 
             if (string.IsNullOrEmpty(ticket))
             {
@@ -373,7 +395,7 @@ namespace TicketTime
                 LockBorder.Visibility = Visibility.Collapsed;
                 LockBorder_2.Visibility = Visibility.Collapsed;
                 LockBorder_3.Visibility = Visibility.Collapsed;
-               
+
 
 
             }
@@ -387,7 +409,7 @@ namespace TicketTime
         private void Start_Click(object sender, RoutedEventArgs e)
         {
             var messageOK = new MessageOK();
-           
+
 
             // messageOK.Owner = this;
             messageOK.Owner = this;
@@ -400,13 +422,13 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please enter a name";
                 messageOK.Show();
-               // MessageBox.Show("Please enter a name");
+                // MessageBox.Show("Please enter a name");
             }
             else if (string.IsNullOrEmpty(track))
             {
                 messageOK.MessageOKLabel.Text = "Please add ticket info and press enter";
                 messageOK.Show();
-               // MessageBox.Show("Please add ticket info and press enter");
+                // MessageBox.Show("Please add ticket info and press enter");
             }
             else
             {
@@ -471,7 +493,7 @@ namespace TicketTime
             var messageOK = new MessageOK();
 
             // messageOK.Owner = this;
-           // messageOK.Owner = this;
+            // messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
 
@@ -498,7 +520,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "An error occured!" + ex.Message;
                 messageOK.Show();
-               // MessageBox.Show("An error occured!" + ex.Message);
+                // MessageBox.Show("An error occured!" + ex.Message);
             }
         }
 
@@ -528,13 +550,13 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please select values for both dates";
                 messageOK.Show();
-               //MessageBox.Show("Please select values for both dates.");
+                //MessageBox.Show("Please select values for both dates.");
             }
             else if (startDate.Value.Date > endDate.Value.Date)
             {
                 messageOK.MessageOKLabel.Text = "Please select a starting date biggr thn the end date";
                 messageOK.Show();
-               // MessageBox.Show("Please select a starting date bigger than the end date.");
+                // MessageBox.Show("Please select a starting date bigger than the end date.");
             }
             else if (startDate.Value.Date == endDate.Value.Date)
             {
@@ -561,9 +583,9 @@ namespace TicketTime
                 }
                 catch (Exception ex)
                 {
-                    messageOK.MessageOKLabel.Text ="An error occured!" + ex.Message;
+                    messageOK.MessageOKLabel.Text = "An error occured!" + ex.Message;
                     messageOK.Show();
-                   // MessageBox.Show("An error occured!" + ex.Message);
+                    // MessageBox.Show("An error occured!" + ex.Message);
                 }
             }
             else
@@ -617,7 +639,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please enter a ticket name";
                 messageOK.Show();
-               // MessageBox.Show("Please enter a ticket name.");
+                // MessageBox.Show("Please enter a ticket name.");
             }
             else
             {
@@ -648,7 +670,7 @@ namespace TicketTime
                 {
                     messageOK.MessageOKLabel.Text = "An error occured!";
                     messageOK.Show();
-                   // MessageBox.Show("An error occured!" + ex.Message);
+                    // MessageBox.Show("An error occured!" + ex.Message);
                 }
             }
         }
@@ -674,7 +696,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please enter a ticket type";
                 messageOK.Show();
-               // MessageBox.Show("Please enter a ticket type.");
+                // MessageBox.Show("Please enter a ticket type.");
             }
             else
             {
@@ -733,7 +755,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please enter a ticket number";
                 messageOK.Show();
-               // MessageBox.Show("Please enter a icket number.");
+                // MessageBox.Show("Please enter a icket number.");
             }
             else
             {
@@ -800,7 +822,7 @@ namespace TicketTime
                 messageOK.Show();
                 //MessageBox.Show("An error occured!" + ex.Message);
             }
-           
+
         }
 
         private void CSVWriter_Click(object sender, RoutedEventArgs e)
@@ -861,7 +883,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "An error occured!";
                 messageOK.Show();
-               // MessageBox.Show("An error occured!" + ex.Message);
+                // MessageBox.Show("An error occured!" + ex.Message);
             }
         }
 
@@ -957,11 +979,15 @@ namespace TicketTime
         }
 
 
-
+        public void UpdateVariable(string newValue)
+        {
+            toggled = newValue;
+           // MessageBox.Show("this " + toggled);
+        }
 
 
 
     }
 
-   
+
 }

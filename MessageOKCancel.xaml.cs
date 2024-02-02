@@ -20,19 +20,22 @@ namespace TicketTime
     /// </summary>
     /// 
 
-            
+
 
     public partial class MessageOKCancel : Window
     {
 
-        public string Toggle { get; private set; } // Use a property for encapsulat
-        public event EventHandler<string> ClosingWithResult;
+        public string toggled;  //{ get; set; } // Use a property for encapsulat
+
+        private MainWindow _mainWindow;
 
 
-        public MessageOKCancel(string data)
+
+        public MessageOKCancel(MainWindow mainWindow)
         {
             InitializeComponent();
-            
+            _mainWindow = mainWindow;
+
 
 
 
@@ -40,20 +43,23 @@ namespace TicketTime
 
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
-           
-            
-           Toggle = "1";
-            ClosingWithResult?.Invoke(this, Toggle); // Notify subscribers with the toggle value
+            //MainWindow mainWindow = new MainWindow();
+
+
+            //mainWindow.toggled = "1";
+           // _mainWindow = mainWindow;
+            _mainWindow.UpdateVariable("1");
 
             CloseWin();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
-            
-            Toggle="2";
-            ClosingWithResult?.Invoke(this, Toggle); // Notify subscribers with the toggle value
+           // MainWindow mainWindow = new MainWindow();
+           // _mainWindow = mainWindow;
+
+            _mainWindow.UpdateVariable("2");
+
 
 
             CloseWin();
@@ -61,9 +67,9 @@ namespace TicketTime
 
         private void CloseWin()
         {
-           Hide();
-        
-       
+            Hide();
+
+
         }
-    }   
+    }
 }
