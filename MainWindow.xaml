@@ -254,7 +254,7 @@
                                 </Button.Resources>
                             </Button>
                             <Border x:Name="LeftBorder_2" CornerRadius="10" BorderThickness="1" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="93" Background="#FF3E3E42" Margin="10,6,0,0" BorderBrush="Black"/>
-                            <Button x:Name="TicketSearchButton_Copy" Content="Reset Database" HorizontalAlignment="Left" Width="105" Height="30" Background="#FF3E3E42" Foreground="White" BorderBrush="#FF252526" Click="Button_Click" Margin="120,-50,0,290">
+                            <Button x:Name="ResetButton" Content="Reset Database" HorizontalAlignment="Left" Width="105" Height="30" Background="#FF3E3E42" Foreground="White" BorderBrush="#FF252526" Click="ClearDB_Click" Margin="120,-50,0,290">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="CornerRadius" Value="5" />
@@ -272,11 +272,11 @@
                                         <RowDefinition Height="10*"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBox x:Name="NameBox" TextWrapping="NoWrap"  Text="" Margin="398,20,198,9" Style="{StaticResource RoundedTextBox}" TextChanged="TextBox_TextChanged" BorderBrush="#FF060606"/>
+                                    <TextBox x:Name="NameBox" TextWrapping="NoWrap"  Text="" Margin="398,20,198,9" Style="{StaticResource RoundedTextBox}" TextChanged="TextBox_TextChanged" BorderBrush="#FF060606" Height="29"/>
                                     <Label x:Name="TicketLabel" Content="Ticket number:" HorizontalAlignment="Left" Margin="26,24,0,0" VerticalAlignment="Top" Foreground="#FFFBF6F6"/>
                                     <Label x:Name="NameLabel1" Content="Ticket name:" HorizontalAlignment="Left" Margin="317,24,0,0" VerticalAlignment="Top" Foreground="#FFFBF6F6"/>
                                     <Label x:Name="NameLabel2" Content="Ticket type:" HorizontalAlignment="Left" Margin="26,17,0,0" VerticalAlignment="Top" Foreground="#FFFBF6F6" Grid.Row="1"/>
-                                    <TextBox x:Name="TicketBox" TextWrapping="Wrap" Text="" Margin="119,20,478,9" Style="{StaticResource RoundedTextBox}" TextChanged="TextBox_TextChanged" BorderBrush="#FF0A0A0A"/>
+                                    <TextBox x:Name="TicketBox" TextWrapping="Wrap" Text="" Margin="119,20,478,9" Style="{StaticResource RoundedTextBox}" TextChanged="TextBox_TextChanged" BorderBrush="#FF0A0A0A" Height="29"/>
 
                                 </Grid>
 
@@ -331,7 +331,7 @@
                                     </Style>
                                 </Button.Resources>
                             </Button>
-                            <Button x:Name="Enter" Content="Enter" HorizontalAlignment="Left" Margin="617,29,0,0" Width="88" Height="30" VerticalAlignment="Top" Background="#FFEFEFF7" Foreground="#FF0E0D0D" BorderBrush="#FF252526" Click="Set_Click">
+                            <Button x:Name="Enter" Content="Enter" HorizontalAlignment="Left" Margin="617,27,0,0" Width="88" Height="30" VerticalAlignment="Top" Background="#FFEFEFF7" Foreground="#FF0E0D0D" BorderBrush="#FF252526" Click="Set_Click">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="CornerRadius" Value="5" />

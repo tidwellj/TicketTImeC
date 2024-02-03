@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Timers;
 using System.Windows;
@@ -17,7 +18,7 @@ using System.Windows.Media.Animation;
 using System.Xml.Linq;
 using Microsoft.Win32;
 
-// using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using MessageBox = System.Windows.MessageBox;
@@ -38,7 +39,9 @@ namespace TicketTime
         public string timerString;
         private string databasePath;
         private string conPath;
-        // private SharedData sharedData = new SharedData();
+        private bool wasClicked;
+       // static MessageOK messageOK;
+       
         public string toggled;
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace TicketTime
         /// </summary>
         public MainWindow()
         {
-            //sharedData.Data = "Some data";
+          
 
             this.InitializeComponent();
 
@@ -59,35 +62,27 @@ namespace TicketTime
             this.notifyIcon.Visible = true;
             this.notifyIcon.Text = "Click to show";
 
-            // notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
+           
             this.notifyIcon.MouseDoubleClick += this.NotifyIcon_MouseDoubleClick1;
 
             var contextMenu = new ContextMenuStrip();
             var quitMenuItem = new ToolStripMenuItem("Quit");
-            quitMenuItem.Click += this.QuitMenuItem_Click; // Event handler for quitting
+            quitMenuItem.Click += this.QuitMenuItem_Click; 
             contextMenu.Items.Add(quitMenuItem);
 
             this.notifyIcon.ContextMenuStrip = contextMenu;
-            //this.Start.IsEnabled = false;
-            //this.Stop.IsEnabled = false;
-            //this.Pause.IsEnabled = false;   
-            //this.Clear.IsEnabled = false;
-
-
-            //buttonToChange.Background = new SolidColorBrush(Colors.Green); // Change to your desired color
-
-            //Start.Background = new SolidColorBrush(Colors.Red);
-            //sharedData = data;
 
 
         }
 
 
 
-        // Timer code ------------------------->
         public void ChangePause()
         {
-            this.isPaused = !this.isPaused;
+           
+           
+                this.isPaused = !this.isPaused;
+            
         }
 
         private void onTimerElapsed(object sender, ElapsedEventArgs e)
@@ -108,7 +103,7 @@ namespace TicketTime
             });
         }
 
-        // Notificaton tray code ---------------->
+       
         private void NotifyIcon_MouseDoubleClick1(object sender, System.Windows.Forms.MouseEventArgs e)
         {
 
@@ -131,10 +126,9 @@ namespace TicketTime
         {
             base.OnClosing(e);
 
-            // Cancel the closing of the application
+            
             e.Cancel = true;
 
-            // Minimize the window and hide it from the taskbar
             this.Hide();
             this.WindowState = WindowState.Minimized;
             this.ShowInTaskbar = false;
@@ -143,8 +137,8 @@ namespace TicketTime
         private void QuitMenuItem_Click(object sender, EventArgs e)
         {
 
-            this.notifyIcon.Visible = false; // Hide the notify icon
-            Application.Current.Shutdown(); // Shutdown the application
+            this.notifyIcon.Visible = false; 
+            Application.Current.Shutdown(); 
             this.notifyIcon.Dispose();
         }
 
@@ -170,72 +164,52 @@ namespace TicketTime
             LockBorder.Visibility = Visibility.Visible;
             LockBorder_2.Visibility = Visibility.Visible;
             LockBorder_3.Visibility = Visibility.Visible;
-            //string dataToShare = "Initial Data";
 
-            //var messageOKCancel = new MessageOKCancel(sharedData);
-
-            // MessageOKLoad();
-            // messageOKCancel.Owner = this;
             MessageOKCancel messageOKCancel = new MessageOKCancel(this);
 
-            // string toggle = messageOKCancel.toggled;
+
 
             messageOKCancel.Left = this.Left + (this.ActualWidth - messageOKCancel.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+            
             messageOKCancel.Top = this.Top + (this.ActualHeight - messageOKCancel.Height) / 2;
-            // messageOK.Show();
 
 
-            var messageOK = new MessageOK();
 
-            // MessageOKLoad();
+            MessageOK messageOK = new MessageOK();
+
+
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+           
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
-
-            // this.timer.Stop();
-
-
-
-            //messageOKCancel.Content = "Do you want to save ticket to Database?";
+            
 
             if (this.timer != null)
             {
                 timer.Stop();
                 messageOKCancel.MessageOKLabel.Text = "Do you want to save ticket to database?";
-                // string updatedData = messageOKCancel.GetUpdatedData();
+               
 
-                messageOKCancel.Show();
+                messageOKCancel.ShowDialog();
                 UpdateVariable(toggled);
 
-                //MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                // int toggle = messageOKCancel.toggle;
-                // MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
-                // MessageBox.Show(messageOKCancel.toggled);
+               
                 if (toggled == "1")
                 {
-                    MessageBox.Show("Tart");
 
-                    // if (toggled == "1")
-                    //{
-                    MessageBox.Show("Barf");
-                    // timerString = "";
-                    // _ = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                 
                     string connectionString = $"Data Source={this.databasePath};";
                     string type = this.TypeCombo.Text;
 
                     string ticket = this.TicketBox.Text;
                     string ticketValue = this.TicketSearchBox.Text;
 
-                    // var endDate = To.SelectedDate;
                     string name = this.NameBox.Text;
 
                     DateTime now = DateTime.Now;
@@ -272,31 +246,7 @@ namespace TicketTime
                 }
 
 
-                //  else if (messageOKCancel.toggled == "2")
-                //  {
-
-                //     this.timer.Stop();
-                // }
-                else if(toggled == "2")
-                {
-                    messageOK.Owner = this;
-                    messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
-
-
-
-                    //messageOK.Left = this.Left;
-                    messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-
-                    // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
-                    messageOK.MessageOKLabel.Text = "Timer never started";
-                    messageOK.Show();
-
-
-
-
-                    //MessageBox.Show("Timer not started");
-                }
-
+               
                 
 
 
@@ -307,14 +257,14 @@ namespace TicketTime
             }
             else
             {
-                // MessageBoxResult result = MessageBox.Show("Do you want to save Ticket to Database?", "Save?", MessageBoxButton.OKCancel);
+                
                 messageOK.MessageOKLabel.Text = "Timer never started";
                 messageOK.Show();
-                MessageBox.Show("Timer not started");
+               
             }
 
             this.LoadDB();
-            MessageBox.Show(toggled);
+         
 
             this.timerString = "00:00:00";
             this.TimeLabel.Content = this.timerString;
@@ -327,34 +277,35 @@ namespace TicketTime
 
         private void Pause_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
+            MessageOK messageOK = new MessageOK();
 
-            // MessageOKLoad();
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+          
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
+          
 
-            if (this.timer == null)
+            if (this.timer == null )
             {
                 messageOK.MessageOKLabel.Text = "Timer is not running!";
                 messageOK.Show();
-                // MessageBox.Show("Timer not running", "Error!", MessageBoxButton.OK);
+               
             }
-            else
+            else if(this.timer != null && wasClicked == false)
             {
 
                 this.ChangePause();
+             
 
                 if (this.Start.Content.ToString() == "Start")
                 {
                     this.Start.Content = "Resume";
                 }
             }
+            wasClicked = true; 
         }
 
         private void Set_Click(object sender, RoutedEventArgs e)
@@ -363,19 +314,17 @@ namespace TicketTime
             string type = this.TypeCombo.Text;
             string ticket = this.TicketBox.Text;
             string name = this.NameBox.Text;
-            //Create code for message window MessageOK.
-            //var 
-            var messageOK = new MessageOK();
 
-            // MessageOKLoad();
+            MessageOK messageOK = new MessageOK();
+
+
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
+           
 
 
             if (string.IsNullOrEmpty(ticket))
@@ -387,7 +336,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please enter a name";
                 messageOK.Show();
-                //MessageBox.Show("Please enter a name");
+              
             }
             else
             {
@@ -399,19 +348,14 @@ namespace TicketTime
 
 
             }
-            //Activate timer buttons
-            // this.Start.IsEnabled = true;
-            //this.Stop.IsEnabled = true;
-            //this.Pause.IsEnabled = true;
-            //this.Clear.IsEnabled = true;
+           
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
+            MessageOK messageOK = new MessageOK();
 
 
-            // messageOK.Owner = this;
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
@@ -422,13 +366,13 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please enter a name";
                 messageOK.Show();
-                // MessageBox.Show("Please enter a name");
+              
             }
             else if (string.IsNullOrEmpty(track))
             {
                 messageOK.MessageOKLabel.Text = "Please add ticket info and press enter";
                 messageOK.Show();
-                // MessageBox.Show("Please add ticket info and press enter");
+                
             }
             else
             {
@@ -450,6 +394,7 @@ namespace TicketTime
 
                     this.ChangePause();
                 }
+                wasClicked = false;
             }
         }
 
@@ -490,10 +435,10 @@ namespace TicketTime
 
         private void LoadDB()
         {
-            var messageOK = new MessageOK();
+            MessageOK messageOK = new MessageOK();
 
-            // messageOK.Owner = this;
-            // messageOK.Owner = this;
+           // messageOK.Owner = this;
+
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
 
@@ -501,7 +446,7 @@ namespace TicketTime
             {
                 this.databasePath = Directory.GetCurrentDirectory() + "\\ticket_database.db";
 
-                // MessageBox.Show(databasePath);
+                
                 SQLiteConnection conn = new SQLiteConnection($"Data Source={this.databasePath};");
                 System.Console.WriteLine(conn);
                 conn.Open();
@@ -513,14 +458,14 @@ namespace TicketTime
 
                 this.TicketGrid.ItemsSource = dt.DefaultView;
 
-                // TicketGrid.Columns[1].Visibility = Visibility.Collapsed;
+                
                 conn.Close();
             }
             catch (Exception ex)
             {
                 messageOK.MessageOKLabel.Text = "An error occured!" + ex.Message;
                 messageOK.Show();
-                // MessageBox.Show("An error occured!" + ex.Message);
+               
             }
         }
 
@@ -535,9 +480,9 @@ namespace TicketTime
 
         private void SearchBetween_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
 
-            // messageOK.Owner = this;
+            MessageOK messageOK = new MessageOK();
+
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
@@ -550,13 +495,13 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "Please select values for both dates";
                 messageOK.Show();
-                //MessageBox.Show("Please select values for both dates.");
+               
             }
             else if (startDate.Value.Date > endDate.Value.Date)
             {
-                messageOK.MessageOKLabel.Text = "Please select a starting date biggr thn the end date";
+                messageOK.MessageOKLabel.Text = "Please select a starting date bigger than the end date";
                 messageOK.Show();
-                // MessageBox.Show("Please select a starting date bigger than the end date.");
+                
             }
             else if (startDate.Value.Date == endDate.Value.Date)
             {
@@ -585,7 +530,7 @@ namespace TicketTime
                 {
                     messageOK.MessageOKLabel.Text = "An error occured!" + ex.Message;
                     messageOK.Show();
-                    // MessageBox.Show("An error occured!" + ex.Message);
+                    
                 }
             }
             else
@@ -617,16 +562,16 @@ namespace TicketTime
                 {
                     messageOK.MessageOKLabel.Text = "An error occured!";
                     messageOK.Show();
-                    //MessageBox.Show("An error occured!" + ex.Message);
+                    
                 }
             }
         }
 
         private void SearchName_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
 
-            // messageOK.Owner = this;
+            MessageOK messageOK = new MessageOK();
+
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
@@ -634,12 +579,12 @@ namespace TicketTime
 
             string nameValue = this.NameSearchBox.Text;
 
-            // var endDate = To.SelectedDate;
+            
             if (string.IsNullOrEmpty(nameValue))
             {
                 messageOK.MessageOKLabel.Text = "Please enter a ticket name";
                 messageOK.Show();
-                // MessageBox.Show("Please enter a ticket name.");
+                
             }
             else
             {
@@ -652,8 +597,7 @@ namespace TicketTime
                         string sql = $"SELECT * FROM TICKETS where name like '%{nameValue}%'";
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
-                            //command.Parameters.AddWithValue("@nameValue", nameValue);
-                            //command.Parameters.AddWithValue("searchPattern", "'%" + nameValue + "%'");
+                           
                             command.ExecuteNonQuery();
 
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
@@ -670,33 +614,33 @@ namespace TicketTime
                 {
                     messageOK.MessageOKLabel.Text = "An error occured!";
                     messageOK.Show();
-                    // MessageBox.Show("An error occured!" + ex.Message);
+                    
                 }
             }
         }
 
         private void SearchType_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
+            MessageOK messageOK = new MessageOK();
 
-            // MessageOKLoad();
+
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+           
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
+            
             string connectionString = $"Data Source={this.databasePath};";
 
             string typeValue = this.TypeSearchBox.Text;
-            // var endDate = To.SelectedDate;
+          
             if (string.IsNullOrEmpty(typeValue))
             {
                 messageOK.MessageOKLabel.Text = "Please enter a ticket type";
                 messageOK.Show();
-                // MessageBox.Show("Please enter a ticket type.");
+                
             }
             else
             {
@@ -711,7 +655,7 @@ namespace TicketTime
                         {
                             command.Parameters.AddWithValue("@typeValue", typeValue);
 
-                            // command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
+                            
                             command.ExecuteNonQuery();
 
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
@@ -728,34 +672,33 @@ namespace TicketTime
                 {
                     messageOK.MessageOKLabel.Text = "An error occured!";
                     messageOK.Show();
-                    //MessageBox.Show("An error occured!" + ex.Message);
+                    
                 }
             }
         }
 
         private void SearchTicket_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
 
-            // MessageOKLoad();
-            //messageOK.Owner = this;
+            MessageOK messageOK = new MessageOK();
+
+            messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+           
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
+            
             string connectionString = $"Data Source={this.databasePath};";
 
             string ticketValue = this.TicketSearchBox.Text;
 
-            // var endDate = To.SelectedDate;
             if (string.IsNullOrEmpty(ticketValue))
             {
                 messageOK.MessageOKLabel.Text = "Please enter a ticket number";
                 messageOK.Show();
-                // MessageBox.Show("Please enter a icket number.");
+                
             }
             else
             {
@@ -787,24 +730,24 @@ namespace TicketTime
                 {
                     messageOK.MessageOKLabel.Text = "An error occured!";
                     messageOK.Show();
-                    //MessageBox.Show("An error occured!" + ex.Message);
+                  
                 }
             }
         }
 
         private void SearchClear_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
 
-            // MessageOKLoad();
+            MessageOK messageOK = new MessageOK();
+
             messageOK.Owner = this;
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+            
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
+           
             try
             {
                 this.TicketSearchBox.Text = string.Empty;
@@ -820,24 +763,22 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "An error occured!";
                 messageOK.Show();
-                //MessageBox.Show("An error occured!" + ex.Message);
             }
 
         }
 
         private void CSVWriter_Click(object sender, RoutedEventArgs e)
         {
-            var messageOK = new MessageOK();
+            MessageOK messageOK = new MessageOK();
 
-            // MessageOKLoad();
-            //messageOK.Owner = this;
+
             messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
 
 
 
-            //messageOK.Left = this.Left;
+           
             messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
-            // messageOK.Show();
+          
             string connectionString = $"Data Source={this.databasePath};";
 
             try
@@ -865,13 +806,26 @@ namespace TicketTime
 
                                 data.Add(row);
                             }
-
-                            SaveFileDialog saveFileDialog = new SaveFileDialog();
-                            saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
-                            saveFileDialog.DefaultExt = "csv";
-                            if (saveFileDialog.ShowDialog() == true)
+                            if (data.Count > 0)
                             {
-                                this.WriteDataToCsv(data, saveFileDialog.FileName);
+                                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                                saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
+                                saveFileDialog.DefaultExt = "csv";
+                                
+                                string defaultFileName = $"ticket_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                                saveFileDialog.FileName = defaultFileName; // Set the default file name in the dialog
+
+
+                                if (saveFileDialog.ShowDialog() == true)
+                                {
+                                    this.WriteDataToCsv(data, saveFileDialog.FileName);
+                                }
+                            }
+                            else
+                            {
+                                messageOK.MessageOKLabel.Text = "No data to write to file.";
+                                messageOK.Show();
+                                
                             }
                         }
 
@@ -883,7 +837,7 @@ namespace TicketTime
             {
                 messageOK.MessageOKLabel.Text = "An error occured!";
                 messageOK.Show();
-                // MessageBox.Show("An error occured!" + ex.Message);
+               
             }
         }
 
@@ -891,7 +845,7 @@ namespace TicketTime
         {
             using (StreamWriter file = new StreamWriter(filePath, false, Encoding.UTF8))
             {
-                // Assuming the first row of data contains the headers
+                
                 for (int i = 0; i < data[0].Length; i++)
                 {
                     file.Write(data[0][i] + (i < data[0].Length - 1 ? "," : string.Empty));
@@ -899,7 +853,7 @@ namespace TicketTime
 
                 file.WriteLine();
 
-                // Writing the data
+              
                 for (int i = 1; i < data.Count; i++)
                 {
                     for (int j = 0; j < data[i].Length; j++)
@@ -907,7 +861,7 @@ namespace TicketTime
                         string value = data[i][j];
                         if (value.Contains(","))
                         {
-                            value = "\"" + value + "\""; // Handle commas within fields
+                            value = "\"" + value + "\""; 
                         }
 
                         file.Write(value + (j < data[i].Length - 1 ? "," : string.Empty));
@@ -920,10 +874,21 @@ namespace TicketTime
         private void ClearDB_Click(object sender, RoutedEventArgs e)
         {
             string connectionString = $"Data Source={this.databasePath};";
-            MessageBoxResult result = MessageBox.Show("Do you want to clear the Database? Tis is not reversable", "Clear?", MessageBoxButton.OKCancel);
+           
+            MessageOKCancel messageOKCancel = new MessageOKCancel(this);
 
-            // MessageBox.Show("Nothing to Save", "Error!", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
+
+
+            messageOKCancel.Left = this.Left + (this.ActualWidth - messageOKCancel.Width) / 2;
+
+
+
+
+            messageOKCancel.Top = this.Top + (this.ActualHeight - messageOKCancel.Height) / 2;
+            messageOKCancel.MessageOKLabel.Text = "Do you want to save ticket to database?";
+            messageOKCancel.ShowDialog();
+
+            if (toggled == "1")
             {
                 try
                 {
@@ -933,9 +898,7 @@ namespace TicketTime
                         string sql = "DELETE FROM TICKETS";
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
-                            //command.Parameters.AddWithValue("@typeValue", typeValue);
-
-                            // command.Parameters.AddWithValue("searchPattern", "%" + typeValue + "%");
+                            
                             command.ExecuteNonQuery();
 
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
@@ -954,10 +917,10 @@ namespace TicketTime
                     MessageBox.Show("An error occured!" + ex.Message);
                 }
             }
-            else if (result == MessageBoxResult.Cancel)
-            {
-                MessageBox.Show("Canceled.");
-            }
+            //else if (toggled == "2")
+            //{
+              //  MessageBox.Show("Canceled.");
+            //}
 
 
 
@@ -982,10 +945,10 @@ namespace TicketTime
         public void UpdateVariable(string newValue)
         {
             toggled = newValue;
-           // MessageBox.Show("this " + toggled);
+           
         }
 
-
+        
 
     }
 

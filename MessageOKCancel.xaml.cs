@@ -67,7 +67,7 @@ namespace TicketTime
 
         private void CloseWin()
         {
-            Hide();
+            this.Close();
 
 
         }
