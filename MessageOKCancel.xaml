@@ -5,24 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TicketTime"
         mc:Ignorable="d"
-        Title="MessageOKCancel" Height="268" Width="328"
+        Title="MessageOKCancel" Height="268" Width="315"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     <Grid Background="Transparent" Margin="0,0,0,2">
-        <Border CornerRadius="20" BorderBrush="Black" BorderThickness="1" Background="#FFEEEEEE" Margin="10,0,10,21">
+        <Border CornerRadius="20" BorderBrush="Black" BorderThickness="1" Background="#FFEEEEEE" Margin="10,87,10,21" Height="152" Width="284">
             <Border.Effect>
                 <DropShadowEffect Color="Black" Opacity="0.5" BlurRadius="10" ShadowDepth="5" Direction="315"/>
             </Border.Effect>
 
             <Grid Width="520" Height="330">
-                <Button x:Name="Enter" Content="OK" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FFEFEFF7" Foreground="#FF0E0D0D" BorderBrush="#FF252526" Click="Ok_Click" Margin="48,196,0,0">
+                <Button x:Name="Enter" Content="OK" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FF3E3E42" Foreground="#FFFBFAFA" BorderBrush="#FF252526" Click="Ok_Click" Margin="30,110,0,0">
                     <Button.Resources>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="CornerRadius" Value="5" />
                         </Style>
                     </Button.Resources>
                 </Button>
-                <TextBlock x:Name="MessageOKLabel" HorizontalAlignment="Left" TextAlignment="Center"  TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="46" Width="234" Margin="30,119,0,0"/>
-                <Button x:Name="Enter_Copy" Content="Cancel" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FFEFEFF7" Foreground="#FF0E0D0D" BorderBrush="#FF252526" Click="Cancel_Click" Margin="172,196,0,0">
+                <TextBlock x:Name="MessageOKLabel" HorizontalAlignment="Left" TextAlignment="Center"  TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="46" Width="234" Margin="30,59,0,0"/>
+                <Button x:Name="Enter_Copy" Content="Cancel" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FF3E3E42" Foreground="#FFFBFAFA" BorderBrush="#FF252526" Click="Cancel_Click" Margin="172,110,0,0">
                     <Button.Resources>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="CornerRadius" Value="5" />

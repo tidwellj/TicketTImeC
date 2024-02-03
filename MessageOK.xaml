@@ -5,24 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TicketTime"
         mc:Ignorable="d"
-        Title="MessageOK" Height="266" Width="328"
+        Title="MessageOK" Height="266" Width="298"
         WindowStyle="None" AllowsTransparency = "True"
         Background="Transparent">
-    <Grid Background="Transparent">
-        <Border CornerRadius="20" BorderBrush="Black" BorderThickness="1" Background="#FFEEEEEE" Margin="10,0,10,21">
+    <Grid Background="Transparent" Height="265" VerticalAlignment="Bottom" Width="328">
+        <Border CornerRadius="20" BorderBrush="Black" BorderThickness="1" Background="#FFEEEEEE" Margin="0,0,44,21" Height="152" VerticalAlignment="Bottom">
             <Border.Effect>
                 <DropShadowEffect Color="Black" Opacity="0.5" BlurRadius="10" ShadowDepth="5" Direction="315"/>
             </Border.Effect>
 
-            <Grid Width="520" Height="330">
-                <Button x:Name="Enter" Content="OK" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FF3E3E42" Foreground="#FFFBF8F8" BorderBrush="#FF252526" Click="Set_Click" Margin="103,198,0,0">
+            <Grid Width="520" Margin="0,0,-16,-25">
+                <Button x:Name="Enter" Content="OK" HorizontalAlignment="Left" Width="88" Height="30" VerticalAlignment="Top" Background="#FF3E3E42" Foreground="#FFFBF8F8" BorderBrush="#FF252526" Click="Set_Click" Margin="103,110,0,0">
                     <Button.Resources>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="CornerRadius" Value="5" />
                         </Style>
                     </Button.Resources>
                 </Button>
-                <TextBlock x:Name="MessageOKLabel" HorizontalAlignment="Left" TextAlignment="Center"  TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="46" Width="234" Margin="30,119,0,0"/>
+                <TextBlock x:Name="MessageOKLabel" HorizontalAlignment="Left" TextAlignment="Center"  TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="46" Width="234" Margin="30,59,0,0"/>
             </Grid>
         </Border>
     </Grid>
