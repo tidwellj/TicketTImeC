@@ -676,12 +676,16 @@ namespace TicketTime
                     string sql = "SELECT * FROM tickets";
                     using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                     {
-                        command.ExecuteNonQuery();
-
                         List<string[]> data = new List<string[]>();
 
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {
+                            string[] headers = new string[reader.FieldCount];
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                headers[i] = reader.GetName(i);
+                            }
+                            data.Add(headers);
                             while (reader.Read())
                             {
                                 string[] row = new string[reader.FieldCount];
@@ -695,16 +699,16 @@ namespace TicketTime
 
                             if (data.Count > 0)
                             {
-                                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                                saveFileDialog.Filter = "CSV file (*.csv)|*.csv";
-                                saveFileDialog.DefaultExt = "csv";
-
-                                string defaultFileName = $"ticket_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
-                                saveFileDialog.FileName = defaultFileName; // Set the default file name in the dialog
+                                SaveFileDialog saveFileDialog = new SaveFileDialog
+                                {
+                                    Filter = "CSV file (*.csv)|*.csv",
+                                    DefaultExt = "csv",
+                                    FileName = $"ticket_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                                };
 
                                 if (saveFileDialog.ShowDialog() == true)
                                 {
-                                    this.WriteDataToCsv(data, saveFileDialog.FileName);
+                                    this.WriteDataToCsv(data, headers, saveFileDialog.FileName);
                                 }
                             }
                             else
@@ -725,7 +729,7 @@ namespace TicketTime
             }
         }
 
-        private void WriteDataToCsv(List<string[]> data, string filePath)
+            private void WriteDataToCsv(List<string[]> data, string[] headers, string filePath)
         {
             using (StreamWriter file = new StreamWriter(filePath, false, Encoding.UTF8))
             {
@@ -763,7 +767,7 @@ namespace TicketTime
             messageOKCancel.Left = this.Left + (this.ActualWidth - messageOKCancel.Width) / 2;
 
             messageOKCancel.Top = this.Top + (this.ActualHeight - messageOKCancel.Height) / 2;
-            messageOKCancel.MessageOKLabel.Text = "Do you want to save ticket to database?";
+            messageOKCancel.MessageOKLabel.Text = "Do you want to clear the database? This is non recoverable";
             messageOKCancel.ShowDialog();
 
             if (this.Toggled == "1")

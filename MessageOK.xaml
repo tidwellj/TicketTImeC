@@ -22,7 +22,7 @@
                         </Style>
                     </Button.Resources>
                 </Button>
-                <TextBlock x:Name="MessageOKLabel" HorizontalAlignment="Left" TextAlignment="Center"  TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="46" Width="234" Margin="30,59,0,0"/>
+                <TextBlock x:Name="MessageOKLabel" HorizontalAlignment="Left" TextAlignment="Left"  TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="46" Width="234" Margin="30,59,0,0"/>
             </Grid>
         </Border>
     </Grid>
