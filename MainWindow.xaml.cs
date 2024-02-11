@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Xml.Linq;
-using Microsoft.Win32;
 
 using Application = System.Windows.Application;
-using Button = System.Windows.Controls.Button;
 using MessageBox = System.Windows.MessageBox;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using Timer = System.Timers.Timer;
@@ -815,6 +808,72 @@ namespace TicketTime
         public void UpdateVariable(string newValue)
         {
             this.Toggled = newValue;
+        }
+
+        private void DataGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Find the clicked row based on the mouse position.
+            DataGridRow clickedRow = FindClickedRow(e.GetPosition(TicketGrid));
+            if (clickedRow != null)
+            {
+                TicketGrid.SelectedItem = clickedRow.DataContext;
+            }
+        }
+
+        private DataGridRow FindClickedRow(Point clickPoint)
+        {
+            var hitTestResult = VisualTreeHelper.HitTest(TicketGrid, clickPoint);
+            var visualParent = hitTestResult.VisualHit;
+            while (visualParent != null && !(visualParent is DataGridRow))
+            {
+                visualParent = VisualTreeHelper.GetParent(visualParent);
+            }
+            return visualParent as DataGridRow;
+        }
+
+        private void DeleteRow_Click(object sender, RoutedEventArgs e)
+        {
+            if (TicketGrid.SelectedItem == null) return;
+
+            var selectedItem = TicketGrid.SelectedItem as DataRowView;
+
+            if (selectedItem != null)
+            {
+                //access the value of the first column
+                var firstCellValue = selectedItem.Row[0];
+
+                MessageOK messageOK = new MessageOK();
+
+                messageOK.Owner = this;
+                messageOK.Left = this.Left + (this.ActualWidth - messageOK.Width) / 2;
+
+                messageOK.Top = this.Top + (this.ActualHeight - messageOK.Height) / 2;
+                string connectionString = $"Data Source={this.databasePath};";
+
+                try
+                {
+                    using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                    {
+                        conn.Open();
+                        string sql = "DELETE FROM tickets WHERE Id = @Id";
+
+                        using (SQLiteCommand command = new SQLiteCommand(sql, conn))
+                        {
+                            command.Parameters.AddWithValue("@Id", firstCellValue);
+
+                            command.ExecuteNonQuery();
+
+                            conn.Close();
+                            LoadDB();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    messageOK.MessageOKLabel.Text = "An error occured!" + ex.Message;
+                    messageOK.Show();
+                }
+            }
         }
     }
 }

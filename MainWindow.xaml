@@ -164,7 +164,11 @@
                                 </Button.Resources>
                             </Button>
                             <DataGrid x:Name="TicketGrid" ColumnHeaderStyle="{StaticResource FlatHeaderStyle}" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" CanUserAddRows="False"  ColumnWidth="*" AutoGenerateColumns="True" Width="500" Height="360" Margin="0,-117,50,0" HorizontalAlignment="Center" VerticalAlignment="Center" AutoGeneratingColumn="MyDataGrid_AutoGeneratingColumn" Background="WhiteSmoke" >
-
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Delete Row" Click="DeleteRow_Click"/>
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
                                         <Setter Property="Margin" Value="0,0,0,5"/>
