@@ -50,7 +50,6 @@ C:\Users\tidwellj\Documents\GitHub\TicketTImeC\bin\Debug\EntityFramework.xml
 C:\Users\tidwellj\Documents\GitHub\TicketTImeC\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\tidwellj\Documents\GitHub\TicketTImeC\bin\Debug\System.Data.SQLite.xml
 C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\TicketTime.csproj.AssemblyReference.cache
-C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\TicketTime.csproj.SuggestedBindingRedirects.cache
 C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\MainWindow.g.cs
 C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\App.g.cs
 C:\Users\tidwellj\Documents\GitHub\TicketTImeC\obj\Debug\TicketTime_MarkupCompile.cache

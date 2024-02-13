@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ticket.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ticket.png")]
 
 
