@@ -426,8 +426,8 @@ namespace TicketTime
                         string sql = "SELECT * FROM tickets WHERE DATE = @startDate";
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
-                            command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyy-MM-dd"));
-                            command.Parameters.AddWithValue("@endDate", startDate.Value.ToString("yyy-MM-dd"));
+                            command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyyy-MM-dd"));
+                            command.Parameters.AddWithValue("@endDate", startDate.Value.ToString("yyyy-MM-dd"));
                             command.ExecuteNonQuery();
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
                             DataTable dt = new DataTable();
@@ -455,8 +455,8 @@ namespace TicketTime
                         string sql = "SELECT * FROM TICKETS where DATE BETWEEN @startDate and @endDate";
                         using (SQLiteCommand command = new SQLiteCommand(sql, conn))
                         {
-                            command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyy-MM-dd"));
-                            command.Parameters.AddWithValue("@endDate", endDate.Value.ToString("yyy-MM-dd"));
+                            command.Parameters.AddWithValue("@startDate", startDate.Value.ToString("yyyy-MM-dd"));
+                            command.Parameters.AddWithValue("@endDate", endDate.Value.ToString("yyyy-MM-dd"));
                             command.ExecuteNonQuery();
 
                             SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter(command);
@@ -696,7 +696,7 @@ namespace TicketTime
                                 {
                                     Filter = "CSV file (*.csv)|*.csv",
                                     DefaultExt = "csv",
-                                    FileName = $"ticket_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                                    FileName = $"ticket_{DateTime.Now:yyyy-MM-dd_HHmmss}.csv"
                                 };
 
                                 if (saveFileDialog.ShowDialog() == true)
